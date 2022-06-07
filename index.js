@@ -4,6 +4,13 @@ const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const fs = require("fs");
 
+let employee;
+let name;
+let id;
+let email;
+let other;
+let html = "";
+
 const baseQuestions = [
     // member's name
     {
@@ -28,7 +35,7 @@ const baseQuestions = [
 ]
 
 // additional question by employee title. Default question is for Manager.
-let additional = [
+let otherQuestion = [
     {
         type: "input",
         name: "office",
@@ -45,37 +52,84 @@ const moreEmployee = [
     }
 ]
 
-// 수정 필요
-function EngineerQuestion() {
-    inquirer.prompt(
+function addEmployee() {
+    inquirer.prompt(baseQuestions).then((answers) => {
+        name = answers.name;
+        id = answers.id;
+        email = answers.email;
+    });
+
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "title",
+            message: "Title of member:",
+            choices: ["Engineer", "Intern"]
+        }
+    ]).then((answer) => {
+        if(answer.title == "Engineer") {
+            createEngineer();
+        }
+        else {
+            createIntern();
+        }
+    });
+}
+
+function createEngineer() {
+    otherQuestion = [
         {
             type: "input",
             name: "github",
             message: "Github account: "
         }
-    )
-    .then((answer) =>{
-        return answer.github;
+    ]
+
+    inquirer.prompt(otherQuestion).then((answer) => {
+        other = answer.github;
     });
+
+    employee = new Engineer(name, id, email, other);
 }
 
-// 수정 필요
-function InternQuestion() {
-    inquirer.prompt(
+function createIntern() {
+    otherQuestion = [
         {
             type: "input",
             name: "school",
             message: "Name of school: "
         }
-    )
-    .then((answer) =>{
-        return answer.school;
+    ]
+
+    inquirer.prompt(otherQuestion).then((answer) => {
+        other = answer.school;
     });
+
+    employee = new Intern(name, id, email, other);
 }
 
-
-
 function init() {
+    //ask for manager info first
+    inquirer.prompt(baseQuestions).then((answers) => {
+        name = answers.name;
+        id = answers.id;
+        email = answers.email;
+    });
+    inquirer.prompt(otherQuestion).then((answer) => {
+        other = answer.office;
+    });
+
+    employee = new Manager(name, id, email, other);
+
+    // ToDo: add feature for generating card with given class
+
+    inquirer.prompt(moreEmployee).then((answer => {
+        if(answer.moreMember)
+        {
+            addEmployee();
+        }
+    }));
+
 
 }
 
