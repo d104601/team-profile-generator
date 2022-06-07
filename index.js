@@ -74,6 +74,13 @@ function addEmployee() {
             createIntern();
         }
     });
+
+    inquirer.prompt(moreEmployee).then((answer => {
+        if(answer.moreMember)
+        {
+            addEmployee();
+        }
+    }));    
 }
 
 function createEngineer() {
@@ -129,6 +136,7 @@ function init() {
             addEmployee();
         }
     }));
+
 
 
 }
