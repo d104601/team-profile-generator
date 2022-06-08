@@ -16,7 +16,7 @@ const baseQuestions = [
     {
         type: "input",
         name: "name",
-        message: "Team members name: "
+        message: "Team member's name: "
     },
 
     // member's id
@@ -53,12 +53,6 @@ const moreEmployee = [
 ]
 
 function addEmployee() {
-    inquirer.prompt(baseQuestions).then((answers) => {
-        name = answers.name;
-        id = answers.id;
-        email = answers.email;
-    });
-
     inquirer.prompt([
         {
             type: "list",
@@ -67,22 +61,23 @@ function addEmployee() {
             choices: ["Engineer", "Intern"]
         }
     ]).then((answer) => {
-        if(answer.title == "Engineer") {
-            createEngineer();
-        }
-        else {
-            createIntern();
-        }
-    });
+        inquirer.prompt(baseQuestions).then((answers) => {
+            name = answers.name;
+            id = answers.id;
+            email = answers.email;
 
-    inquirer.prompt(moreEmployee).then((answer => {
-        if(answer.moreMember)
-        {
-            addEmployee();
-        }
-    }));    
+            if(answer.title == "Engineer") {
+                createEngineer();
+            }
+            else {
+                createIntern(); 
+            }
+        });
+    });
+   
 }
 
+// function to ask engineer's question and create its html card
 function createEngineer() {
     otherQuestion = [
         {
@@ -94,11 +89,14 @@ function createEngineer() {
 
     inquirer.prompt(otherQuestion).then((answer) => {
         other = answer.github;
-    });
 
-    employee = new Engineer(name, id, email, other);
+        employee = new Engineer(name, id, email, other);
+
+        askForMore();
+    });
 }
 
+// function to ask intern's question and create its html card
 function createIntern() {
     otherQuestion = [
         {
@@ -110,9 +108,33 @@ function createIntern() {
 
     inquirer.prompt(otherQuestion).then((answer) => {
         other = answer.school;
-    });
 
-    employee = new Intern(name, id, email, other);
+        employee = new Intern(name, id, email, other);
+
+        askForMore();        
+    });
+}
+
+// function to ask if user want to add more employee
+function askForMore() {
+    inquirer.prompt(moreEmployee).then((answer => {
+        if(answer.moreMember) {
+            addEmployee();
+        }
+        else {
+            generateFile();
+        }
+    })); 
+}
+
+function generateFile(){
+    fs.writeFile("./dist/index.html", html, (err) => {
+        if(err)
+        {
+            throw err;
+        }
+        console.log("Profile file is generated successfully.");
+    });
 }
 
 function init() {
@@ -121,24 +143,17 @@ function init() {
         name = answers.name;
         id = answers.id;
         email = answers.email;
-    });
-    inquirer.prompt(otherQuestion).then((answer) => {
-        other = answer.office;
-    });
+        
+        inquirer.prompt(otherQuestion).then((answer) => {
+            other = answer.office;
 
-    employee = new Manager(name, id, email, other);
+            employee = new Manager(name, id, email, other);
 
-    // ToDo: add feature for generating card with given class
+            // ToDo: add feature for generating card with given class
 
-    inquirer.prompt(moreEmployee).then((answer => {
-        if(answer.moreMember)
-        {
-            addEmployee();
-        }
-    }));
-
-
-
+            askForMore();
+        });
+    });    
 }
 
 init();
