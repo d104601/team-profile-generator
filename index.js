@@ -116,7 +116,7 @@ function createEngineer() {
             <p class="subtitle is-6">${employee.getRole()}</p>
             <ul>
                 <li>ID: ${employee.getId()}</li>
-                <li>Email: <a class="email" href="mailto:${employee.getEmail()}"></a></li>
+                <li>Email: <a class="email" href="mailto:${employee.getEmail()}">${employee.getEmail()}</a></li>
                 <li><a href="https://github.com/${employee.getGithub}">Github</a></li>
             </ul>
         </div>
