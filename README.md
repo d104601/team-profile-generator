@@ -22,4 +22,4 @@ node index.js
 ![sample](https://github.com/d104601/team-profile-generator/blob/main/demo.gif)
 
 ## Generated Sample
-![sample](https://github.com/d104601/team-profile-generator/blob/main/sample.jpg)
+![sample](https://github.com/d104601/team-profile-generator/blob/main/screenshot.jpg)
